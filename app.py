@@ -1,32 +1,52 @@
-from flask import Flask
+from flask import Flask, render_template
+from flask_socketio import SocketIO
 import psutil
+import threading
 import time
 
 app = Flask(__name__)
+socketio = SocketIO(app)
+
+cpu_load_thread = None
+stop_thread = False
+connected_clients = 0
+
+def increase_cpu_load():
+    global stop_thread
+    result = 0
+    while not stop_thread:
+        for _ in range(1000000):
+            result += 1
+
+def monitor_cpu_load():
+    while True:
+        cpu_percent = psutil.cpu_percent(interval=1)
+        socketio.emit('cpu_update', {'cpu': cpu_percent})
+        time.sleep(1)
 
 @app.route('/')
 def index():
-    result = 0
-    # 최대 CPU 사용량을 정의합니다. 이 값은 CPU의 총 개수에 따라 조정될 수 있습니다.
-    MAX_CPU_PERCENTAGE = 50
-    
-    while True:
-        # 현재 CPU 사용량을 가져옵니다.
-        cpu_percent = psutil.cpu_percent()
-        
-        # CPU 사용량이 최대값을 넘어가면 while 루프를 빠져나갑니다.
-        if cpu_percent > MAX_CPU_PERCENTAGE:
-            break
-        
-        # CPU 부하를 일으키는 작업을 수행합니다.
-        # 간단한 계산을 여러 번 반복하여 CPU 사용량을 높입니다.
-        result = result + 1
+    return render_template('index.html')
 
-        time.sleep(0.001)
+@socketio.on('connect')
+def handle_connect():
+    global cpu_load_thread, stop_thread, connected_clients
+    connected_clients += 1
+    stop_thread = False
 
-    
-    return f'CPU 부하가 50%를 넘었습니다. {cpu_percent}'
+    if connected_clients == 1:
+        cpu_load_thread = threading.Thread(target=increase_cpu_load)
+        cpu_load_thread.start()
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    global stop_thread, connected_clients
+    connected_clients -= 1
+    if connected_clients == 0:
+        stop_thread = True
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    monitor_thread = threading.Thread(target=monitor_cpu_load)
+    monitor_thread.start()
+    socketio.run(app, debug=True, host='0.0.0.0')
 

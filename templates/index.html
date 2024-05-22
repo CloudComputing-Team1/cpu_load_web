@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>실시간 CPU 사용량 모니터링</title>
+    <!-- 최신 버전의 socket.io 클라이언트 라이브러리를 로드합니다 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>실시간 CPU 사용량 모니터링</h1>
+    <div id="cpu-usage"></div>
+    <script>
+        var socket = io();
+
+        socket.on('connect', function() {
+            console.log('Connected');
+        });
+
+        socket.on('disconnect', function() {
+            console.log('Disconnected');
+        });
+
+        socket.on('cpu_update', function(data) {
+            document.getElementById("cpu-usage").innerText = '현재 CPU 사용량: ' + data.cpu + '%';
+        });
+
+        socket.on('error', function(error) {
+            console.error('Error:', error);
+        });
+    </script>
+</body>
+</html>
