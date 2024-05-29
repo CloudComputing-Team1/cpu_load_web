@@ -3,6 +3,7 @@ from flask_socketio import SocketIO
 import psutil
 import threading
 import time
+import os
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -46,6 +47,8 @@ def handle_disconnect():
         stop_thread = True
 
 if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
     monitor_thread = threading.Thread(target=monitor_cpu_load)
     monitor_thread.start()
     socketio.run(app, debug=True, host='0.0.0.0')
