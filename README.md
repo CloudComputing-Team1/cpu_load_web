@@ -10,6 +10,6 @@ DockerHub에서 이미지 가져오기: docker pull fog1234/cpu_load_web:3.0
 
 Ubuntu 기준 Docker 안 깔려 있을시: https://docs.docker.com/engine/install/ubuntu/ 에서 Install using the apt repository 부분을 따라하면 됨
 
-수정 예정1: 사용자가 웹 도커까지 거쳐온 경로(ip 주소 등)을 웹에 표시
+수정 예정1: 사용자가 웹 도커까지 거쳐온 경로(ip 주소 등)을 웹에 표시 (접속 ip는 표시되는데 그 전 경로 표시는 수정 중)
 
-수정 예정2: 사용자 3명까지 수용 가능하도록 cpu 과부하 조정
+수정 예정2: 사용자 3명까지 수용 가능하도록 cpu 과부하 조정 (완료)
