@@ -48,6 +48,7 @@ Ubuntu 기준 Docker 안 깔려 있을시: https://docs.docker.com/engine/instal
     ```
 
 위 방법대로 수행시키면, 시그널에 따라 추가된 컨테이너를 "docker ps" 명령어로 다음과 같이 확인할 수 있습니다. (예시)
+
     ```sh
     CONTAINER ID   IMAGE                      COMMAND           CREATED          STATUS          PORTS                                         NAMES
     6a017491741e   fog1234/cpu_load_web:3.0   "python app.py"   3 minutes ago    Up 3 minutes    0.0.0.0:12221->5000/tcp, :::12221->5000/tcp   loving_hodgkin
